@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Auction Helper",
+  "version": "1.5.0",
+  "description": "A manual YoWorld auction organizer with image repair, bundle cover selection, sale history, and export tools.",
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://api.yoworld.info/*",
+    "https://yw-web.yoworld.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Auction Helper"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnuZgKFOIa2axulMzZT1XdsNemDGqKo8zKdjsKhyH3PMzBpwEoJZeTfA8XdcJMCE0wdMl3jguULeAXwrSErq9XiooOrIYGh8Syk+oeJWhPIpeaE4toZ+IxQu4xiKGvLcFr97DGYFfLy6LryXcHLX2+tQRWixXQPheovFb3cz+W2rneYKjnNd1zVFb88DxEIL3MH041sYWk7KjZuJhlWnLWpnRpApMSKtNTQWYPBGYG4++8SgvxaSkqXMiJ03i59okf7BGXmJV2Tp7bEkLjuVHxlLz8NGEkMHBiyDcEVU8IRV3Pf5+owBma88p1uDmASx4XTKMMXNE3gKCDEE/L1RMqwIDAQAB"
+}

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auction Helper</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="moon">☾</span>
+          <span class="brand-g">G</span>
+        </div>
+        <div class="brand-copy">
+          <div class="eyebrow">GOTHICKA'S</div>
+          <h1>Auction Helper</h1>
+        </div>
+        <button id="backupBtn" class="icon-btn" title="Backup & restore" aria-label="Backup and restore">⋮</button>
+      </div>
+
+      <div class="auction-title-wrap">
+        <label for="auctionTitle">Auction</label>
+        <input id="auctionTitle" class="auction-title" value="Weekend Closed Auction" autocomplete="off">
+      </div>
+
+      <section class="stats-grid" aria-label="Auction statistics">
+        <article class="stat-card">
+          <span class="stat-label">Remaining</span>
+          <strong id="remainingStat">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Sold</span>
+          <strong id="soldStat">0</strong>
+        </article>
+        <article class="stat-card wide">
+          <span class="stat-label">Reserve Value</span>
+          <strong id="reserveStat">0</strong>
+        </article>
+        <article class="stat-card wide accent">
+          <span class="stat-label">Actual Sales</span>
+          <strong id="salesStat">0</strong>
+        </article>
+      </section>
+    </header>
+
+    <nav class="view-tabs" aria-label="Auction Helper sections">
+      <button type="button" class="view-tab active" data-view-tab="active">Active Auction</button>
+      <button type="button" class="view-tab" data-view-tab="history">
+        History <span id="historyCount" class="tab-count">0</span>
+      </button>
+      <button id="repairAllImagesBtn" type="button" class="repair-all-btn" title="Rebuild all YoWorld image URLs from saved item IDs">
+        Repair Images
+      </button>
+    </nav>
+
+    <div id="activeView" class="app-view">
+
+    <section class="catalog-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOWORLD.INFO</span>
+          <h2>Find Auction Items</h2>
+        </div>
+        <button class="small-add-btn" data-open-add>＋ Manual</button>
+      </div>
+
+      <form id="catalogSearchForm" class="catalog-search">
+        <div class="search-wrap catalog-search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="catalogSearchInput" type="search" placeholder="Search YoWorld items…" autocomplete="off">
+        </div>
+        <button id="catalogSearchBtn" class="catalog-search-btn" type="submit">Search</button>
+      </form>
+
+      <div id="catalogStatus" class="catalog-status">
+        Search YoWorld.info and add a single item or build a multi-item bundle lot.
+      </div>
+
+      <div id="catalogResults" class="catalog-results"></div>
+
+      <div id="catalogPager" class="catalog-pager hidden">
+        <button id="catalogPrev" type="button" class="ghost-btn">← Prev</button>
+        <span id="catalogPageLabel">Page 1 / 1</span>
+        <button id="catalogNext" type="button" class="ghost-btn">Next →</button>
+      </div>
+
+      <div id="bundleDraftSection" class="bundle-draft-section hidden">
+        <div class="section-heading compact">
+          <div>
+            <span class="eyebrow">BUNDLE DRAFT</span>
+            <h2>Bundle Builder</h2>
+          </div>
+          <span id="bundleDraftCount" class="item-count">0 items</span>
+        </div>
+
+        <div id="bundleDraftList" class="bundle-draft-list"></div>
+
+        <div class="bundle-draft-actions">
+          <button id="clearBundleDraftBtn" type="button" class="ghost-btn">Clear Draft</button>
+          <button id="copyBundleDraftBtn" type="button" class="ghost-btn">Copy All Names</button>
+          <button id="createBundleFromDraftBtn" type="button" class="primary-btn">Create Bundle Auction</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="currentSection" class="current-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">ON THE BLOCK</span>
+          <h2>Current Item</h2>
+        </div>
+        <span id="currentPosition" class="position-pill">—</span>
+      </div>
+
+      <div id="emptyCurrent" class="empty-current">
+        <div class="empty-raven">◆</div>
+        <h3>Your auction queue is empty.</h3>
+        <p>Search YoWorld.info above or add an item manually.</p>
+        <button class="primary-btn" data-open-add>Add Auction Item</button>
+      </div>
+
+      <article id="currentCard" class="current-card hidden">
+        <div class="current-main">
+          <div id="currentIcon" class="item-icon current-icon">
+            <span>CAH</span>
+          </div>
+          <div class="current-copy">
+            <h3 id="currentName">Item Name</h3>
+            <div class="meta-row">
+              <span id="currentLotTypeChip" class="meta-chip">Single</span>
+              <span class="meta-chip">Reserve / Start <b id="currentReserve">0</b></span>
+              <span id="currentQtyChip" class="meta-chip">Qty <b id="currentQty">1</b></span>
+            </div>
+            <div id="currentBundleSummary" class="bundle-summary hidden"></div>
+            <p id="currentNotes" class="current-notes"></p>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <button id="copyCurrentNameBtn" class="ghost-btn">Copy Name</button>
+          <button id="soldBtn" class="sold-btn">✓ Sold / Traded</button>
+          <button id="noSaleBtn" class="secondary-btn">No Sale</button>
+          <button id="skipBtn" class="ghost-btn">Skip</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="queue-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">QUEUE</span>
+          <h2>Next Up</h2>
+        </div>
+        <button class="small-add-btn" data-open-add>＋ Add</button>
+      </div>
+      <div id="nextUpList" class="next-up-list"></div>
+    </section>
+
+    <section class="all-section">
+      <div class="section-heading compact">
+        <div>
+          <span class="eyebrow">AUCTION LIST</span>
+          <h2>All Auction Items</h2>
+        </div>
+        <span id="itemCount" class="item-count">0 items</span>
+      </div>
+
+      <div class="search-row">
+        <div class="search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Search your auction list…" autocomplete="off">
+        </div>
+      </div>
+
+      <div id="filterBar" class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="ready">Ready</button>
+      </div>
+
+      <div id="itemsList" class="items-list"></div>
+    </section>
+    </div>
+
+    <section id="historyView" class="history-section app-view hidden" aria-labelledby="historyHeading">
+      <div class="section-heading compact">
+        <div>
+          <span class="eyebrow">COMPLETED LOTS</span>
+          <h2 id="historyHeading">Auction History</h2>
+        </div>
+        <span id="historyItemCount" class="item-count">0 records</span>
+      </div>
+
+      <div class="search-row">
+        <div class="search-wrap">
+          <span aria-hidden="true">&#128269;</span>
+          <input id="historySearchInput" type="search" placeholder="Search item name or buyer..." autocomplete="off">
+        </div>
+      </div>
+
+      <div id="historyFilterBar" class="filter-bar">
+        <button class="filter-btn active" data-history-filter="all">All</button>
+        <button class="filter-btn" data-history-filter="sold">Sold</button>
+        <button class="filter-btn" data-history-filter="no-sale">No Sale</button>
+      </div>
+
+      <div id="historyList" class="history-list"></div>
+    </section>
+
+    <footer class="footer-note">
+      Manual organizer only · Item search uses YoWorld.info · Nothing here controls YoWorld.
+    </footer>
+  </main>
+
+  <div id="itemModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">AUCTION LOT</span>
+          <h2 id="itemModalTitle">Add Item</h2>
+        </div>
+        <button class="icon-btn" data-close-modal aria-label="Close">×</button>
+      </div>
+
+      <form id="itemForm">
+        <input id="editId" type="hidden">
+        <input id="sourceItemId" type="hidden">
+
+        <label class="field">
+          <span>Lot type</span>
+          <select id="lotTypeInput">
+            <option value="single">Single Item</option>
+            <option value="bundle">Bundle Auction</option>
+          </select>
+        </label>
+
+        <div class="icon-editor">
+          <div id="iconPreview" class="item-icon preview-icon"><span>＋</span></div>
+          <div>
+            <label class="upload-btn" for="iconInput">Choose Icon</label>
+            <input id="iconInput" type="file" accept="image/*" hidden>
+            <button id="removeIconBtn" class="text-btn" type="button">Remove</button>
+            <p id="iconSourceHint">Images are resized and saved locally.</p>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>Lot name *</span>
+          <input id="nameInput" required maxlength="180" placeholder="e.g. Black Devilish Designer Hair">
+        </label>
+
+        <div class="two-col reserve-row">
+          <label class="field">
+            <span>Reserve / Starting Bid *</span>
+            <input id="reserveInput" required inputmode="decimal" placeholder="e.g. 4m">
+          </label>
+          <label id="qtyFieldWrap" class="field">
+            <span>Quantity</span>
+            <input id="qtyInput" type="number" min="1" step="1" value="1">
+          </label>
+        </div>
+
+        <div id="bundleEditor" class="bundle-editor hidden">
+          <div class="bundle-editor-head">
+            <div>
+              <span class="bundle-editor-title">Bundle contents</span>
+              <p class="bundle-editor-note">A bundle is one auction lot containing multiple items.</p>
+            </div>
+            <button id="appendDraftBtn" type="button" class="small-add-btn hidden">Append Draft</button>
+          </div>
+
+          <div id="bundleModalList" class="bundle-modal-list"></div>
+
+          <div class="bundle-editor-actions">
+            <button id="copyBundleItemsBtn" type="button" class="ghost-btn">Copy All Names</button>
+            <button id="clearBundleItemsBtn" type="button" class="ghost-btn">Clear Bundle Items</button>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>Status</span>
+          <select id="statusInput">
+            <option value="ready">Ready</option>
+            <option value="sold">Sold / Traded</option>
+            <option value="no-sale">No Sale</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="notesInput" rows="3" maxlength="500" placeholder="Set details, reminder, etc."></textarea>
+        </label>
+
+        <div id="soldFields" class="sold-fields hidden">
+          <div class="two-col">
+            <label class="field">
+              <span>Buyer</span>
+              <input id="buyerInput" maxlength="120" placeholder="Optional">
+            </label>
+            <label class="field">
+              <span>Sold price</span>
+              <input id="soldPriceInput" inputmode="decimal" placeholder="Final bid">
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" data-close-modal>Cancel</button>
+          <button type="submit" class="primary-btn">Save Lot</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="saleModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="saleModalTitle">
+    <div class="modal-backdrop" data-close-sale></div>
+    <div class="modal-card sale-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">COMPLETE TRADE</span>
+          <h2 id="saleModalTitle">Sold / Traded</h2>
+        </div>
+        <button class="icon-btn" data-close-sale aria-label="Close">×</button>
+      </div>
+
+      <div id="saleItemMini" class="sale-item-mini"></div>
+
+      <form id="saleForm">
+        <label class="field">
+          <span>Buyer</span>
+          <input id="saleBuyer" maxlength="120" placeholder="Optional">
+        </label>
+        <label class="field">
+          <span>Final sale price *</span>
+          <input id="salePrice" required inputmode="decimal" placeholder="e.g. 5.2m">
+        </label>
+        <div id="saleReserveHint" class="reserve-hint"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" data-close-sale>Cancel</button>
+          <button type="submit" class="sold-btn">✓ Complete Trade → Next</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="backupMenu" class="backup-menu hidden">
+    <button id="exportDataBtn">⇩ Export Auction Data (CSV)</button>
+    <button id="exportBtn">⇩ Export JSON Backup</button>
+    <label for="importInput">⇧ Import JSON Backup</label>
+    <input id="importInput" type="file" accept=".json,application/json" hidden>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
