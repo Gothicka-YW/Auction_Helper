@@ -1078,6 +1078,137 @@ button {
   overflow: hidden;
 }
 
+/* Screenshot-ready lot gallery */
+.showcase-btn {
+  border: 1px solid rgba(255,121,211,.32);
+  background: linear-gradient(135deg, rgba(255,71,189,.13), rgba(154,103,255,.11));
+  color: var(--pink-2);
+}
+.showcase-btn:hover { filter: brightness(1.12); }
+.view-current-btn { grid-column: 1 / -1; }
+.showcase-mini-btn { color: var(--pink-2); }
+.showcase-modal {
+  z-index: 70;
+  align-items: center;
+  padding: 12px;
+}
+.lot-showcase-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+}
+.lot-showcase-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 13px;
+  background: rgba(18,13,24,.97);
+  box-shadow: var(--shadow);
+}
+.lot-showcase-toolbar > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.lot-showcase-toolbar > div { display: flex; gap: 6px; }
+.lot-showcase-toolbar button {
+  min-height: 32px;
+  padding: 5px 9px;
+  font-size: 9px;
+}
+.lot-showcase-card {
+  padding: 20px;
+  border: 1px solid rgba(255,121,211,.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 88% 0, rgba(255,71,189,.14), transparent 33%),
+    radial-gradient(circle at 4% 100%, rgba(154,103,255,.13), transparent 35%),
+    #100a16;
+  box-shadow: 0 20px 70px rgba(0,0,0,.58);
+}
+.lot-showcase-head {
+  margin-bottom: 15px;
+  text-align: center;
+}
+.lot-showcase-head h2 {
+  margin-top: 4px;
+  font-size: 23px;
+  line-height: 1.12;
+}
+.lot-showcase-head p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+.lot-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+.lot-showcase-grid .lot-showcase-item:only-child {
+  grid-column: 1 / -1;
+}
+.lot-showcase-item {
+  display: flex;
+  min-width: 0;
+  min-height: 152px;
+  padding: 11px 9px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+  text-align: center;
+}
+.lot-showcase-icon {
+  width: 92px;
+  height: 92px;
+  flex-basis: 92px;
+  border-radius: 17px;
+  background: rgba(7,4,10,.45);
+}
+.lot-showcase-icon img {
+  padding: 5px;
+  object-fit: contain;
+}
+.lot-showcase-item h3 {
+  margin: 9px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.lot-showcase-qty {
+  margin-top: 5px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(154,103,255,.13);
+  color: var(--purple-2);
+  font-size: 8px;
+  font-weight: 800;
+}
+.lot-showcase-grid.compact {
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 8px;
+}
+.lot-showcase-grid.compact .lot-showcase-item { min-height: 126px; padding: 8px 6px; }
+.lot-showcase-grid.compact .lot-showcase-icon { width: 70px; height: 70px; flex-basis: 70px; }
+.lot-showcase-grid.compact h3 { margin-top: 6px; font-size: 10px; }
+.lot-showcase-grid.extra-compact { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
+.lot-showcase-grid.extra-compact .lot-showcase-item { min-height: 108px; }
+.lot-showcase-grid.extra-compact .lot-showcase-icon { width: 56px; height: 56px; flex-basis: 56px; }
+.showcase-open { overflow: hidden; }
+
 /* Completed-lot history */
 .history-list { display: grid; gap: 9px; }
 .history-card {
@@ -1101,7 +1232,7 @@ button {
   font-size: 9px;
 }
 .history-title-copy b { color: var(--text); }
-.history-actions { display: flex; gap: 3px; }
+.history-actions { display: flex; max-width: 116px; flex-wrap: wrap; justify-content: flex-end; gap: 3px; }
 .history-price-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1187,6 +1318,11 @@ button {
   .view-tabs { grid-template-columns: 1fr 1fr; }
   .repair-all-btn { grid-column: 1 / -1; }
   .history-price-grid { grid-template-columns: 1fr; }
+  .lot-showcase-card { padding: 15px 12px; }
+  .lot-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lot-showcase-toolbar { align-items: flex-start; flex-direction: column; }
+  .lot-showcase-toolbar > div { width: 100%; }
+  .lot-showcase-toolbar button { flex: 1; }
 }
 @media (max-width: 365px) {
   .catalog-search { grid-template-columns: 1fr; }

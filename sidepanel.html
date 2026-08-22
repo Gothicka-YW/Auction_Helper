@@ -143,6 +143,7 @@
         </div>
 
         <div class="action-grid">
+          <button id="viewCurrentItemsBtn" class="showcase-btn view-current-btn">View All Items</button>
           <button id="copyCurrentNameBtn" class="ghost-btn">Copy Name</button>
           <button id="soldBtn" class="sold-btn">✓ Sold / Traded</button>
           <button id="noSaleBtn" class="secondary-btn">No Sale</button>
@@ -347,6 +348,28 @@
           <button type="submit" class="sold-btn">✓ Complete Trade → Next</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div id="lotItemsModal" class="modal showcase-modal hidden" role="dialog" aria-modal="true" aria-labelledby="lotShowcaseTitle">
+    <div class="modal-backdrop" data-close-lot-items></div>
+    <div class="lot-showcase-shell">
+      <div class="lot-showcase-toolbar">
+        <span>Screenshot-ready lot view</span>
+        <div>
+          <button id="copyShowcaseNamesBtn" type="button" class="ghost-btn">Copy All Names</button>
+          <button type="button" class="secondary-btn" data-close-lot-items>Close</button>
+        </div>
+      </div>
+
+      <article id="lotShowcaseCard" class="lot-showcase-card">
+        <header class="lot-showcase-head">
+          <span id="lotShowcaseAuction" class="eyebrow">AUCTION</span>
+          <h2 id="lotShowcaseTitle">Auction Lot</h2>
+          <p id="lotShowcaseMeta"></p>
+        </header>
+        <div id="lotShowcaseGrid" class="lot-showcase-grid"></div>
+      </article>
     </div>
   </div>
 
