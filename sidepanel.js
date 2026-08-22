@@ -19,6 +19,7 @@ let editingBundleItems = [];
 let editingBundleCoverItemId = "";
 let bundleModalUsesDraft = false;
 let saleItemId = null;
+let showcaseLotId = null;
 let draggedId = null;
 let toastTimer = null;
 
@@ -66,6 +67,7 @@ const els = {
   historyFilterBar: $("historyFilterBar"),
   historyList: $("historyList"),
   repairAllImagesBtn: $("repairAllImagesBtn"),
+  viewCurrentItemsBtn: $("viewCurrentItemsBtn"),
   copyCurrentNameBtn: $("copyCurrentNameBtn"),
 
   catalogSearchForm: $("catalogSearchForm"),
@@ -115,6 +117,12 @@ const els = {
   salePrice: $("salePrice"),
   saleReserveHint: $("saleReserveHint"),
   saleItemMini: $("saleItemMini"),
+  lotItemsModal: $("lotItemsModal"),
+  lotShowcaseAuction: $("lotShowcaseAuction"),
+  lotShowcaseTitle: $("lotShowcaseTitle"),
+  lotShowcaseMeta: $("lotShowcaseMeta"),
+  lotShowcaseGrid: $("lotShowcaseGrid"),
+  copyShowcaseNamesBtn: $("copyShowcaseNamesBtn"),
   backupBtn: $("backupBtn"),
   backupMenu: $("backupMenu"),
   exportDataBtn: $("exportDataBtn"),
@@ -386,6 +394,62 @@ function getLotById(id) {
   return state.items.find(item => item.id === id) || state.history.find(item => item.id === id) || null;
 }
 
+function getLotShowcaseItems(lot) {
+  if (!lot) return [];
+  if (lot.lotType === "bundle" && lot.bundleItems.length) {
+    return lot.bundleItems.map(item => ({
+      ...item,
+      lotType: "single",
+      bundleItems: [],
+      quantity: 1
+    }));
+  }
+  return [{
+    name: lot.name,
+    icon: lot.icon,
+    sourceItemId: lot.sourceItemId,
+    lotType: "single",
+    bundleItems: [],
+    quantity: lot.quantity
+  }];
+}
+
+function openLotItemsModal(lotId) {
+  const lot = getLotById(lotId);
+  if (!lot) return showToast("That auction lot could not be found");
+
+  const showcaseItems = getLotShowcaseItems(lot);
+  showcaseLotId = lot.id;
+  els.lotShowcaseAuction.textContent = state.auctionTitle || "Auction";
+  els.lotShowcaseTitle.textContent = lot.name;
+
+  const lotType = lot.lotType === "bundle"
+    ? `Bundle - ${showcaseItems.length} ${showcaseItems.length === 1 ? "item" : "items"}`
+    : `Single Item${lot.quantity > 1 ? ` - Qty ${lot.quantity}` : ""}`;
+  els.lotShowcaseMeta.textContent = `${lotType} - Reserve / Start ${formatCoins(lot.reserve)}`;
+
+  els.lotShowcaseGrid.innerHTML = showcaseItems.map(item => `
+    <article class="lot-showcase-item">
+      ${iconMarkup(item, "lot-showcase-icon")}
+      <h3>${escapeHtml(item.name)}</h3>
+      ${item.quantity > 1 ? `<span class="lot-showcase-qty">Quantity ${item.quantity}</span>` : ""}
+    </article>
+  `).join("");
+  els.lotShowcaseGrid.classList.toggle("compact", showcaseItems.length > 8);
+  els.lotShowcaseGrid.classList.toggle("extra-compact", showcaseItems.length > 16);
+
+  els.lotItemsModal.classList.remove("hidden");
+  document.body.classList.add("showcase-open");
+  wireImageFallbacks(els.lotShowcaseGrid);
+}
+
+function closeLotItemsModal() {
+  showcaseLotId = null;
+  els.lotItemsModal.classList.add("hidden");
+  document.body.classList.remove("showcase-open");
+  els.lotShowcaseGrid.innerHTML = "";
+}
+
 function generateBundleName(items) {
   const count = Array.isArray(items) ? items.length : 0;
   if (!count) return "Bundle Auction";
@@ -493,6 +557,7 @@ function renderNextUp() {
         <strong title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</strong>
         <span>${escapeHtml(getLotTypeLabel(item))} · Reserve ${formatCoins(item.reserve)}${item.lotType === "single" && item.quantity > 1 ? ` · Qty ${item.quantity}` : ""}</span>
       </div>
+      <button class="mini-btn text-mini-btn showcase-mini-btn" data-view-lot="${escapeHtml(item.id)}" title="View all lot items">View</button>
       <button class="mini-btn text-mini-btn" data-copy-name="${item.id}" title="Copy item name">Copy</button>
       <span class="next-number">+${index + 1}</span>
     </div>
@@ -548,6 +613,7 @@ function renderItems() {
           </div>
         </div>
         <div class="item-menu">
+          <button class="mini-btn text-mini-btn showcase-mini-btn" data-view-lot="${escapeHtml(item.id)}" title="View all lot items">View</button>
           <button class="mini-btn text-mini-btn" data-copy-name="${item.id}" title="Copy item name">Copy</button>
           <button class="mini-btn text-mini-btn" data-repair-lot="${item.id}" title="Repair saved YoWorld image URLs">Fix</button>
           <span class="mini-btn drag-handle" title="${canDrag ? "Drag to reorder" : "Clear search/filter to drag"}">⋮⋮</span>
@@ -620,6 +686,7 @@ function renderHistory() {
             ${item.buyer ? `<span>Buyer: <b>${escapeHtml(item.buyer)}</b></span>` : ""}
           </div>
           <div class="history-actions">
+            <button class="mini-btn text-mini-btn showcase-mini-btn" data-view-lot="${escapeHtml(item.id)}" title="View all lot items">View</button>
             <button class="mini-btn text-mini-btn" data-copy-name="${item.id}" title="Copy item name">Copy</button>
             <button class="mini-btn text-mini-btn" data-repair-lot="${item.id}" title="Repair saved YoWorld image URLs">Fix</button>
           </div>
@@ -1441,6 +1508,17 @@ async function appendDraftToCurrentBundle() {
 /* ---------- Events ---------- */
 
 document.addEventListener("click", async (event) => {
+  if (event.target.closest("[data-close-lot-items]")) {
+    closeLotItemsModal();
+    return;
+  }
+
+  const viewLotButton = event.target.closest("[data-view-lot]");
+  if (viewLotButton) {
+    openLotItemsModal(viewLotButton.dataset.viewLot);
+    return;
+  }
+
   const viewTab = event.target.closest("[data-view-tab]");
   if (viewTab) {
     state.view = viewTab.dataset.viewTab === "history" ? "history" : "active";
@@ -1787,9 +1865,20 @@ els.nameInput.addEventListener("input", updateIconPreview);
 els.soldBtn.addEventListener("click", openSaleModal);
 els.noSaleBtn.addEventListener("click", markNoSale);
 els.skipBtn.addEventListener("click", skipCurrent);
+els.viewCurrentItemsBtn.addEventListener("click", () => {
+  const item = getCurrentItem();
+  if (item) openLotItemsModal(item.id);
+});
 els.copyCurrentNameBtn.addEventListener("click", async () => {
   const item = getCurrentItem();
   if (item) await copyText(item.name, "Item name copied");
+});
+
+els.copyShowcaseNamesBtn.addEventListener("click", async () => {
+  const lot = getLotById(showcaseLotId);
+  if (!lot) return;
+  const names = getLotShowcaseItems(lot).map(item => item.name).join("\n");
+  await copyText(names, "All lot item names copied");
 });
 
 els.repairAllImagesBtn.addEventListener("click", repairAllImages);
@@ -1873,6 +1962,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeItemModal();
     closeSaleModal();
+    closeLotItemsModal();
     els.backupMenu.classList.add("hidden");
   }
 });

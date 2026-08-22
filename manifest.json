@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Auction Helper",
-  "version": "1.5.0",
-  "description": "A manual YoWorld auction organizer with image repair, bundle cover selection, sale history, and export tools.",
+  "version": "1.6.0",
+  "description": "A manual YoWorld auction organizer with screenshot-ready lot galleries, image repair, bundle covers, history, and exports.",
   "permissions": [
     "storage",
     "sidePanel",

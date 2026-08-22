@@ -1,4 +1,4 @@
-# Auction Helper v1.5.0
+# Auction Helper v1.6.0
 
 A side-panel Chrome extension for manually organizing and running YoWorld auctions.
 
@@ -32,6 +32,8 @@ If you entered data in a pre-v1.4.0 build that did not use the stable extension 
 - Initials fallback when an image cannot be loaded
 - Selectable bundle cover icons, preserved in JSON backup/import
 - Quick-copy item and bundle-component names
+- Screenshot-ready **View All Items** gallery for every current, queued, active, and historical lot
+- Full saved item names and icons in a clean bundle grid for Facebook auction-post screenshots
 - Current lot and next-up queue
 - Search, filters, drag reorder, and manual up/down reorder
 - JSON backup and restore
@@ -69,6 +71,11 @@ These are used for manual item search and item thumbnails.
 Auction Helper is a manual organizer. It does not click, bid, trade, automate gameplay, inspect YoWorld network traffic, or send gameplay actions to YoWorld.
 
 ## Version notes
+
+### v1.6.0
+- Added **View All Items** controls to current, queued, active-list, and history lots.
+- Added a screenshot-ready lot gallery that shows every saved bundle item name and icon without reopening YoWorld.info.
+- Added compact layouts for larger bundles and **Copy All Names** inside the gallery.
 
 ### v1.5.0
 - Added individual and global **Repair Images** actions that rebuild YoWorld CDN URLs from saved item IDs.
